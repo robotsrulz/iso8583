@@ -51,6 +51,22 @@ func TestNumericField(t *testing.T) {
 	require.Equal(t, 9876, data.Value)
 }
 
+func TestNumericPack(t *testing.T) {
+	t.Run("returns error for zero value when fixed length and no padding specified", func(t *testing.T) {
+		spec := &Spec{
+			Length:      10,
+			Description: "Field",
+			Enc:         encoding.ASCII,
+			Pref:        prefix.ASCII.Fixed,
+		}
+		numeric := NewNumeric(spec)
+		_, err := numeric.Pack()
+
+		// zero value for Numeric is 0, so we have default field length 1
+		require.EqualError(t, err, "failed to encode length: field length: 1 should be fixed: 10")
+	})
+}
+
 func TestNumericFieldUnmarshal(t *testing.T) {
 	str := NewNumericValue(9876)
 
@@ -71,18 +87,18 @@ func TestNumericFieldWithNotANumber(t *testing.T) {
 		Pad:         padding.Left(' '),
 	})
 
-	numeric.SetBytes([]byte("hello"))
+	err := numeric.SetBytes([]byte("hello"))
+	require.Error(t, err)
+	require.EqualError(t, err, "failed to convert into number")
 	require.Equal(t, 0, numeric.Value)
 
 	packed, err := numeric.Pack()
-
 	require.NoError(t, err)
 	require.Equal(t, "         0", string(packed))
 
 	_, err = numeric.Unpack([]byte("hhhhhhhhhh"))
-
 	require.Error(t, err)
-	require.Contains(t, err.Error(), "failed to convert into number")
+	require.EqualError(t, err, "failed to set bytes: failed to convert into number")
 }
 
 func TestNumericFieldZeroLeftPaddedZero(t *testing.T) {
