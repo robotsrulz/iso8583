@@ -64,7 +64,7 @@ type Header interface {
 	ReadFrom(r io.Reader) (int, error)
 
 	// SetLength sets the length of the message
-	SetLength(length int)
+	SetLength(length int) error
 
 	// Length returns the length of the message
 	Length() int

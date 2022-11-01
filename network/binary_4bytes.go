@@ -7,6 +7,8 @@ import (
 	"math"
 )
 
+var _ Header = (*Binary4Bytes)(nil)
+
 type Binary4Bytes struct {
 	Len uint32
 }

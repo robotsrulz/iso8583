@@ -15,6 +15,8 @@ const (
 	MaxMessageLength        = 2048
 )
 
+var _ Header = (*VMLH)(nil)
+
 type VMLH struct {
 	Len uint16
 
