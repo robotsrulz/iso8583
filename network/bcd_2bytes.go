@@ -19,8 +19,9 @@ func NewBCD2BytesHeader() *BCD2BytesHeader {
 	return &BCD2BytesHeader{}
 }
 
-func (h *BCD2BytesHeader) SetLength(length int) {
+func (h *BCD2BytesHeader) SetLength(length int) error {
 	h.Len = length
+	return nil
 }
 
 func (h *BCD2BytesHeader) Length() int {

@@ -17,8 +17,9 @@ func NewASCII4BytesHeader() *ASCII4BytesHeader {
 	return &ASCII4BytesHeader{}
 }
 
-func (h *ASCII4BytesHeader) SetLength(length int) {
+func (h *ASCII4BytesHeader) SetLength(length int) error {
 	h.Len = length
+	return nil
 }
 
 func (h *ASCII4BytesHeader) Length() int {
