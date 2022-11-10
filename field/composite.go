@@ -488,3 +488,48 @@ func getFieldIndexOrTag(field reflect.StructField) (string, error) {
 
 	return "", nil
 }
+
+func (c *Composite) Field(id string, val string) error {
+	if f, ok := c.subfields[id]; ok {
+		c.setSubfields[id] = struct{}{}
+		return f.SetBytes([]byte(val))
+	}
+	return fmt.Errorf("failed to set field %s. ID does not exist", id)
+}
+
+func (c *Composite) BinaryField(id string, val []byte) error {
+	if f, ok := c.subfields[id]; ok {
+		c.setSubfields[id] = struct{}{}
+		return f.SetBytes(val)
+	}
+	return fmt.Errorf("failed to set binary field %s. ID does not exist", id)
+}
+
+func (c *Composite) GetString(id string) (string, error) {
+	if f, ok := c.subfields[id]; ok {
+		c.setSubfields[id] = struct{}{}
+		return f.String()
+	}
+	return "", fmt.Errorf("failed to get string for field %s. ID does not exist", id)
+}
+
+func (c *Composite) GetBytes(id string) ([]byte, error) {
+	if f, ok := c.subfields[id]; ok {
+		c.setSubfields[id] = struct{}{}
+		return f.Bytes()
+	}
+	return nil, fmt.Errorf("failed to get bytes for field %s. ID does not exist", id)
+}
+
+func (c *Composite) GetField(id string) Field {
+	return c.subfields[id]
+}
+
+// Fields returns the map of the set fields
+func (c *Composite) GetFields() map[string]Field {
+	fields := map[string]Field{}
+	for i := range c.subfields {
+		fields[i] = c.GetField(i)
+	}
+	return fields
+}
